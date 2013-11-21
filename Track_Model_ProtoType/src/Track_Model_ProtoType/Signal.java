@@ -9,14 +9,14 @@ package Track_Model_ProtoType;
 public class Signal
 {   
     public int singalType; //0<--switch machine signal, 1<--railway signal, 2<--railway crossing bars signal
-    public int switchPosition; // 0<--default branch to 'NextBlock', 1<--branch to 'OptionalNextBlock'
+    public boolean switchPosition; // false<--default branch to 'NextBlock', true<--branch to 'OptionalNextBlock'
     public int railWaySignalLights; // 0<--Stop, 1<--Decelerate, 2<--Proceed, 3<--Accelerate
     public int railWayCrossingBars; // 0<--Closed, 1<--Open
 
 
     public Signal()
     {
-	switchPosition = 0; //set to default switch position
+	switchPosition = false; //set to default switch position
 	railWaySignalLights = 2; //set to default 'proceed' state
 	railWayCrossingBars = 1; //set to default 'open' position
     }
@@ -24,14 +24,14 @@ public class Signal
 
     public void changeSwitchMachineSignal()
     {
-        if(switchPosition == 0)
+        if(switchPosition)
         {
-            switchPosition = 1;
+            switchPosition = false;
         }
 
         else
         {
-            switchPosition = 0;
+            switchPosition = true;
         }
     }
 
@@ -53,7 +53,7 @@ public class Signal
         }
     }
 
-    public int getSwitchMachineStatus()
+    public boolean getSwitchMachineStatus()
     {
         return switchPosition;
     }

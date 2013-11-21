@@ -28,15 +28,10 @@ public class TrackCircuit
     	return failureMode;
     }
 
-    public boolean setOccupancy()
+    public boolean setOccupancy(boolean occupancy)
     {   
-        trackOccupancy = true;
+        trackOccupancy = occupancy;
         return trackOccupancy;
     }
 
-    public boolean resetOccupancy()
-    {
-        trackOccupancy = false;
-        return trackOccupancy;
-    }
 }

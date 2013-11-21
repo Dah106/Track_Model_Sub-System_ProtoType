@@ -10,72 +10,78 @@ package Track_Model_ProtoType;
  */
 public class Block 
 {   
-    private String PathOfFile = "Track_Layout.csv";
+    /*
+        nextBlock: reference to next block
+        previousBlock: reference to previous block
+        nextOptionalBlock: reference to (optional) next block. Used in certain blocks wherever a switch machine is found.
+    */
     private Block nextBlock;
     private Block previousBlock;
     private Block nextOptionalBlock;
     
     /*
         Information for each block
-        See the data file in courseweb
+        See the raw data file in courseweb
     */
     
-    public String trainLine;
-    public String sectionName;
-    public double blockLength;
-    public double grade;
-    public double speedLimit;
-    public double elevation;
-    public double cumulativeElevation;
-    public String stationName;
-    public String switchMachine;
-    public String trackType;
-    public String railwayCrossing;   
+    private String trainLine;
+    private int blockID;
+    private String sectionName;
+    private double blockLength;
+    private double grade;
+    private double speedLimit;
+    private double elevation;
+    private double cumulativeElevation;
+    private String stationName;
+    private String switchMachine;
+    private String trackType;
+    private String railwayCrossing; 
+    
     /*
         Three data types
         Signal denotes the switch machine, railway crossing bar and railway light signal
         TrackCircuit denotes the track circuit which mainly deals with train location update and failure mode
         Transponder denotes the device that stores the station name. The position of each transponder will be setup later
     */
-    public Signal controlSignal;
+    public   Signal controlSignal;
     public TrackCircuit trackCircuit;
     public Transponder transponder;
-    
+    private Info info;
     /*
         branchDirection denotes the position of switch machine
         trafficLight denotes the status of railway sigal
         crossingBars denotes the position of railway crossing bars
     
     */
-    public int branchDirection; // 0<--default branch to 'NextBlock', 1<--branch to 'OptionalNextBlock'
+    public boolean branchDirection; // false<--default branch to 'NextBlock', true<--branch to 'OptionalNextBlock'
     public int trafficLight; // 0<--Stop, 1<--Decelerate, 2<--Proceed, 3<--Accelerate
     public int crossingBars; // 0<--Closed, 1<--Open
 
     /*
         trackStatus denotes track status for maintenance requirement
     */
-    public int trackStatus; // 100<-- Normal, -100<-- Closed
+    private int trackStatus; // 100<-- Normal, -100<-- Closed
 
     /*
         trackOccupancy denotes track occupancy 
     */
-    public boolean trackOccupancy; //true if train is present, false if train is not on the track
+    private boolean trackOccupancy; //true if train is present, false if train is not on the track
 
    /*
         Assuming that every block has railway signal (traffic light)
         Some blocks have swithch machine and railway crossing bars
         
     */
-    public int isFailure; //0<--Normal Operation, 1<--Broken Rail, 2<--Power Failure, 3<--Track Circuit Failure
-    public boolean isSwitchMachine; //true if the block has a switch machine, false if the block does not have a switch machine
-    public boolean isRailWayCrossingBars; //true if the block has a railway crossing bar, false if the block does have a railway crossing bar
+    private int isFailure; //0<--Normal Operation, 1<--Broken Rail, 2<--Power Failure, 3<--Track Circuit Failure
+    private boolean isSwitchMachine; //true if the block has a switch machine, false if the block does not have a switch machine
+    private boolean isRailWayCrossingBars; //true if the block has a railway crossing bar, false if the block does have a railway crossing bar
 
     public Block()
     {   
         /*
             set to default values
         */
-        branchDirection = 0; //0<--default branch to 'nextBlock', 1<--branch to 'nextOptionalBlock'
+        branchDirection = false; //0<--default branch to 'nextBlock', 1<--branch to 'nextOptionalBlock'
         trafficLight = 2; // 0<--Stop, 1<--Decelerate, 2<--Proceed, 3<--Accelerate
         crossingBars = 1; //set to default 'open' position
         isFailure = 0; //set to Normal Operation
@@ -85,12 +91,12 @@ public class Block
         transponder = new Transponder();
     }
 
-    public Block(String TrainLine, String NameOfSection, double LengthOfBlock, double Grade, double SpeedLimit, double Elevation, double CumulativeElevation, String StationName, String SwitchMachine, String TrackType, String RailWay)
+    public Block(String TrainLine, String NameOfSection,int IdOfBlock, double LengthOfBlock, double Grade, double SpeedLimit, double Elevation, double CumulativeElevation, String StationName, String SwitchMachine, String TrackType, String RailWay)
     {   
         /*
             set to default values
         */
-        branchDirection = 0; //0<--default branch to 'nextBlock', 1<--branch to 'nextOptionalBlock'
+        branchDirection = false; //0<--default branch to 'nextBlock', 1<--branch to 'nextOptionalBlock'
         trafficLight = 2; // 0<--Stop, 1<--Decelerate, 2<--Proceed, 3<--Accelerate
         crossingBars = 1; // 0<--Closed, 1<--Open
         isFailure = 0; //set to Normal Operation
@@ -103,6 +109,7 @@ public class Block
             Initilization
         */
         trainLine = TrainLine;
+        blockID = IdOfBlock;
         sectionName = NameOfSection;
         blockLength = LengthOfBlock;
         grade = Grade;
@@ -170,41 +177,15 @@ public class Block
     /*
         pretty self-explanatory
     */
-    public void setSectionName(String SectionName)
-    {
-        this.sectionName = SectionName;
-    }
-    
-    public void setBlockLength(double BlockLength)
-    {
-        this.blockLength = BlockLength;
-    }
-
-    public void setBlockGrade(double BlockGrade)
-    {
-        this.grade = BlockGrade;
-    }
-
-    public void setBlockSpeedLimit(double BlockSpeedLimit)
-    {
-        this.speedLimit = BlockSpeedLimit;
-    }
-
-    public void setBlockElevation(double BlockElevation)
-    {
-        this.elevation = BlockElevation;
-    }
-
-    public void setCumulativeElevation(double BlockCumulativeElevation)
-    {
-        this.cumulativeElevation = BlockCumulativeElevation;
-    }
-
     public String getTrainLine()
     {
         return this.trainLine;
     }
-
+    
+    public int getBlockID()
+    {
+        return this.blockID;
+    }
     public String getSectionName()
     {
         return sectionName;
@@ -277,7 +258,34 @@ public class Block
     {
         return transponder;
     }
+    
+    /*
+        install transponder in certain blocks. 
+        Assume four blocks prior to the block that has a station
+    */
+    
+    public void installTransponder(String stationName)
+    {
+        transponder.setNextStation(stationName);
+    }
+    
+    /*
+        check if a certain block has transponder. 
+        If the block has a transponder, method returns yes
+        If the block dost not have a transponder, method returns no
+        required for train
+    */
+    public boolean hasTransponder()
+    {
+        boolean result = false;
+        
+        if(!(transponder.getNextStation().equals("DEFAULT_STATION")))
+        {
+            result = true;
+        }
 
+        return result;
+    }
    //////////////////////////////////////////////////////
     
     /*
@@ -315,10 +323,11 @@ public class Block
         get branch direction of the track
         required for train model
     */
-    public int getBranchDirection()
+    public boolean getBranchDirection()
     {
         return branchDirection;
     }
+    
     /*
         get traffic light information of the block 
         required for train model
@@ -327,6 +336,16 @@ public class Block
     {
         return trafficLight;
     }
+    
+    public Info getInfo()
+    {
+        return info;
+    }
+    public void setInfo(Info info)
+    {
+        this.info=info;
+    }
+    
     /*
         get railway crossing bars of the block
         required for train model
@@ -336,23 +355,14 @@ public class Block
         return crossingBars;
     }
     ///////////////////////////////
+    
     /*
         set track occupancy
         required for train model
     */
-    public void changeOccupancy()
+    public void changeOccupancy(boolean occupancy)
     {  
-      
-       trackOccupancy = trackCircuit.setOccupancy();
-    }
-    /*
-        change track occupancy
-        required for train model
-    */
-    public void changeBackOccupancy()
-    {   
-        
-        trackOccupancy = trackCircuit.resetOccupancy();
+       trackOccupancy = trackCircuit.setOccupancy(occupancy);
     }
     
     /*
@@ -368,16 +378,20 @@ public class Block
     {
         trackStatus = TRACK_STATUS;
     }
-    ///////////////////////////////
-    /*
-        get station information
-        required for train model
-    */
-    public String getStationInformation()
+      public void setMaintainence()
     {
-        
-        return transponder.getNextStation();
+        if(isFailure==0)
+        {   
+            //if track is not broken 
+            trackStatus=trackStatus*-1;
+        }
+        else if( trackStatus==100)
+        {    
+            //if track is broken
+            trackStatus=-100;       
+        }
     }
+
     ///////////////////////////////
 
     public boolean isClose()
@@ -435,3 +449,4 @@ public class Block
     }
  
 }
+

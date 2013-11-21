@@ -508,11 +508,11 @@ public class TrackModelUI extends javax.swing.JFrame {
                 
                 if(data[0].equals(isRed))
                 {
-                  RedLine.put(Integer.parseInt(data[2]), new Block(data[0],data[1],Double.parseDouble(data[3]), Double.parseDouble(data[4]), Double.parseDouble(data[5]), Double.parseDouble(data[6]),Double.parseDouble(data[7]), data[8], data[9],data[10],data[11]));
+                  RedLine.put(Integer.parseInt(data[2]), new Block(data[0],data[1],Integer.parseInt(data[2]),Double.parseDouble(data[3]), Double.parseDouble(data[4]), Double.parseDouble(data[5]), Double.parseDouble(data[6]),Double.parseDouble(data[7]), data[8], data[9],data[10],data[11]));
                 }
                 else  
                 {
-                  GreenLine.put(Integer.parseInt(data[2]), new Block(data[0],data[1],Double.parseDouble(data[3]), Double.parseDouble(data[4]), Double.parseDouble(data[5]), Double.parseDouble(data[6]),Double.parseDouble(data[7]), data[8], data[9],data[10],data[11]));
+                  GreenLine.put(Integer.parseInt(data[2]), new Block(data[0],data[1],Integer.parseInt(data[2]),Double.parseDouble(data[3]), Double.parseDouble(data[4]), Double.parseDouble(data[5]), Double.parseDouble(data[6]),Double.parseDouble(data[7]), data[8], data[9],data[10],data[11]));
                 }
             }
         }catch (FileNotFoundException e) {  
@@ -546,11 +546,11 @@ public class TrackModelUI extends javax.swing.JFrame {
 
                 if(data[0].equals(isRed))
                 {
-                  RedLine.put(Integer.parseInt(data[2]), new Block(data[0],data[1],Double.parseDouble(data[3]), Double.parseDouble(data[4]), Double.parseDouble(data[5]), Double.parseDouble(data[6]),Double.parseDouble(data[7]), data[8], data[9],data[10],data[11]));
+                  RedLine.put(Integer.parseInt(data[2]), new Block(data[0],data[1],Integer.parseInt(data[2]),Double.parseDouble(data[3]), Double.parseDouble(data[4]), Double.parseDouble(data[5]), Double.parseDouble(data[6]),Double.parseDouble(data[7]), data[8], data[9],data[10],data[11]));
                 }
                 else  
                 {
-                  GreenLine.put(Integer.parseInt(data[2]), new Block(data[0],data[1],Double.parseDouble(data[3]), Double.parseDouble(data[4]), Double.parseDouble(data[5]), Double.parseDouble(data[6]),Double.parseDouble(data[7]), data[8], data[9],data[10],data[11]));
+                  GreenLine.put(Integer.parseInt(data[2]), new Block(data[0],data[1],Integer.parseInt(data[2]),Double.parseDouble(data[3]), Double.parseDouble(data[4]), Double.parseDouble(data[5]), Double.parseDouble(data[6]),Double.parseDouble(data[7]), data[8], data[9],data[10],data[11]));
                 }
             }
         }catch (FileNotFoundException e) {  
@@ -566,8 +566,7 @@ public class TrackModelUI extends javax.swing.JFrame {
         }  
         }  
     }
-        
-        
+  
     }
     
     public void createLinkedBlock()
@@ -1038,7 +1037,7 @@ public class TrackModelUI extends javax.swing.JFrame {
                     int blocknumber = (int)blockNumberComboChooser.getSelectedItem();
                     if(LinkedRed.getBlockInformation(blocknumber).getSwitchMachine().equals("SWITCH"))
                     {   
-                        if(LinkedRed.getBlockInformation(blocknumber).getBranchDirection() == 0)
+                        if(!(LinkedRed.getBlockInformation(blocknumber).getBranchDirection()))
                         {
                             displayBlockInformation.append("\nIn Red line, the switch machine in block " + blocknumber + " is at default position" );
                         }
@@ -1078,7 +1077,7 @@ public class TrackModelUI extends javax.swing.JFrame {
                     int blocknumber = (int)blockNumberComboChooser.getSelectedItem();
                     if(LinkedGreen.getBlockInformation(blocknumber).getSwitchMachine().equals("SWITCH"))
                     {   
-                        if(LinkedGreen.getBlockInformation(blocknumber).getBranchDirection() == 0)
+                        if(!(LinkedGreen.getBlockInformation(blocknumber).getBranchDirection()))
                         {
                             displayBlockInformation.append("\nIn Green line, the switch machine in block " + blocknumber + " is at default position" );
                         }
@@ -1488,7 +1487,7 @@ public class TrackModelUI extends javax.swing.JFrame {
                     else
                     {   
                         LinkedRed.toggleTrackModelSwitch(blocknumber);
-                        if(LinkedRed.getBlockInformation(blocknumber).getBranchDirection() == 0)
+                        if(!(LinkedRed.getBlockInformation(blocknumber).getBranchDirection()))
                         {
                           displayBlockInformation.append("\nIn Red Line, NOW the switch machine at block " + blocknumber + " is at its default position");
                         }
@@ -1528,7 +1527,7 @@ public class TrackModelUI extends javax.swing.JFrame {
                     else
                     {  
                         LinkedGreen.toggleTrackModelSwitch(blocknumber);
-                        if(LinkedGreen.getBlockInformation(blocknumber).getBranchDirection() == 0)
+                        if(!(LinkedGreen.getBlockInformation(blocknumber).getBranchDirection()))
                         {
                           displayBlockInformation.append("\nIn Green Line, NOW the switch machine at block " + blocknumber + " is at its default position");
                         }

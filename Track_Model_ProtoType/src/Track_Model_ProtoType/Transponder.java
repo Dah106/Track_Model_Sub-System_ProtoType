@@ -9,16 +9,18 @@ public class Transponder
 	public String nextStation;
 
 	public Transponder()
-	{}
+	{
+            nextStation = "DEFAULT_STATION";
+        }
 
 	public void setNextStation(String StationName)
 	{
-		nextStation = StationName;
+            nextStation = StationName;
 	}
     
-    public String getNextStation()
-    {
-    	return this.nextStation;
-    }
+        public String getNextStation()
+        {
+            return this.nextStation;
+        }
 
 }
